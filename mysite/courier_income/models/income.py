@@ -15,7 +15,7 @@ class AbstractIncome(models.Model):
         abstract = True
 
     def __str__(self):
-        return f"{self.courier.name} - {self.value} - {self.date}"
+        return f"{self.courier.name} - {self.amount} - {self.date}"
 
 
 class TripIncome(AbstractIncome):
