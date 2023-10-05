@@ -19,7 +19,7 @@ class AbstractIncomeType(models.Model):
         abstract = True
 
     def __str__(self):
-        return f"{self.courier.name} - {self.amount} - {self.date}"
+        return f"{self.courier} - {self.amount} - {self.date}"
 
     def create_or_update_daily_income(self):
         daily_income, created = DailyIncome.objects.get_or_create(
