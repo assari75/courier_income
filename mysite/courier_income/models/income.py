@@ -50,3 +50,13 @@ class Forfeit(AbstractIncome):
         related_name="forfeits",
         verbose_name="Courier"
     )
+
+
+class DailyIncome(AbstractIncome):
+
+    courier = models.ForeignKey(
+        "courier_income.Courier",
+        on_delete=models.CASCADE,
+        related_name="daily_incomes",
+        verbose_name="Courier"
+    )
