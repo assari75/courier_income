@@ -1,5 +1,7 @@
 from django.db import models
 
+from courier_income.models import DailyIncome
+
 
 class AbstractIncomeType(models.Model):
 

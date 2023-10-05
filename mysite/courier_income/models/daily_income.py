@@ -9,7 +9,7 @@ class DailyIncome(models.Model):
         related_name="daily_incomes",
         verbose_name="Courier"
     )
-    amount = models.PositiveIntegerField(verbose_name="Amount", default=0)
+    amount = models.IntegerField(verbose_name="Amount", default=0)
     date = models.DateField()
 
     class Meta:
