@@ -1,7 +1,7 @@
 from django.db import models
 
 
-class AbstractIncome(models.Model):
+class AbstractIncomeType(models.Model):
 
     IS_POSITIVE = True
     
@@ -31,7 +31,7 @@ class AbstractIncome(models.Model):
         daily_income.save()
 
 
-class TripIncome(AbstractIncome):
+class TripIncome(AbstractIncomeType):
 
     courier = models.ForeignKey(
         "courier_income.Courier",
@@ -45,7 +45,7 @@ class TripIncome(AbstractIncome):
         verbose_name_plural = "Trip Incomes"
 
 
-class Reward(AbstractIncome):
+class Reward(AbstractIncomeType):
 
     courier = models.ForeignKey(
         "courier_income.Courier",
@@ -55,7 +55,7 @@ class Reward(AbstractIncome):
     )
 
 
-class Forfeit(AbstractIncome):
+class Forfeit(AbstractIncomeType):
 
     IS_POSITIVE = False
 
@@ -65,21 +65,3 @@ class Forfeit(AbstractIncome):
         related_name="forfeits",
         verbose_name="Courier"
     )
-
-
-class DailyIncome(models.Model):
-
-    courier = models.ForeignKey(
-        "courier_income.Courier",
-        on_delete=models.CASCADE,
-        related_name="daily_incomes",
-        verbose_name="Courier"
-    )
-    amount = models.PositiveIntegerField(verbose_name="Amount", default=0)
-    date = models.DateField()
-
-    class Meta:
-        unique_together = ['courier', 'date']
-
-    def __str__(self):
-        return f"{self.courier.name} - {self.amount} - {self.date}"
