@@ -8,7 +8,7 @@ class AbstractIncome(models.Model):
         on_delete=models.CASCADE,
         verbose_name="Courier"
     )
-    amount = models.PositiveIntegerField(verbose_name="Value")
+    amount = models.PositiveIntegerField(verbose_name="Value", default=0)
     date = models.DateField()
 
     class Meta:
@@ -60,3 +60,4 @@ class DailyIncome(AbstractIncome):
         related_name="daily_incomes",
         verbose_name="Courier"
     )
+    date = models.DateField(unique=True)
