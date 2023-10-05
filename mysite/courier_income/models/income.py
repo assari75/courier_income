@@ -3,12 +3,14 @@ from django.db import models
 
 class AbstractIncome(models.Model):
 
+    IS_POSITIVE = True
+    
     courier = models.ForeignKey(
         "courier_income.Courier",
         on_delete=models.CASCADE,
         verbose_name="Courier"
     )
-    amount = models.PositiveIntegerField(verbose_name="Value", default=0)
+    amount = models.PositiveIntegerField(verbose_name="Amount")
     date = models.DateField()
 
     class Meta:
@@ -16,6 +18,17 @@ class AbstractIncome(models.Model):
 
     def __str__(self):
         return f"{self.courier.name} - {self.amount} - {self.date}"
+
+    def create_or_update_daily_income(self):
+        daily_income, created = DailyIncome.objects.get_or_create(
+            date=self.date,
+            courier=self.courier
+        )
+        if self.IS_POSITIVE:
+            daily_income.amount += self.amount
+        else:
+            daily_income.amount -= self.amount
+        daily_income.save()
 
 
 class TripIncome(AbstractIncome):
@@ -44,6 +57,8 @@ class Reward(AbstractIncome):
 
 class Forfeit(AbstractIncome):
 
+    IS_POSITIVE = False
+
     courier = models.ForeignKey(
         "courier_income.Courier",
         on_delete=models.CASCADE,
@@ -52,7 +67,7 @@ class Forfeit(AbstractIncome):
     )
 
 
-class DailyIncome(AbstractIncome):
+class DailyIncome(models.Model):
 
     courier = models.ForeignKey(
         "courier_income.Courier",
@@ -60,4 +75,11 @@ class DailyIncome(AbstractIncome):
         related_name="daily_incomes",
         verbose_name="Courier"
     )
-    date = models.DateField(unique=True)
+    amount = models.PositiveIntegerField(verbose_name="Amount", default=0)
+    date = models.DateField()
+
+    class Meta:
+        unique_together = ['courier', 'date']
+
+    def __str__(self):
+        return f"{self.courier.name} - {self.amount} - {self.date}"
