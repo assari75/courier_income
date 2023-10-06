@@ -1,4 +1,5 @@
 from django.db import models
+from django.db import transaction
 
 from courier_income.models import DailyIncome
 
@@ -20,6 +21,13 @@ class AbstractIncomeType(models.Model):
 
     def __str__(self):
         return f"{self.courier} - {self.amount} - {self.date}"
+
+    def save(self, *args, **kwargs):
+        try:
+            with transaction.atomic():
+                super().save(*args, **kwargs)
+        except Exception as e:
+            print(e)
 
     def create_or_update_daily_income(self):
         daily_income, created = DailyIncome.objects.get_or_create(
