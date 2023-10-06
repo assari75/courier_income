@@ -1,0 +1,48 @@
+version: "3.9"
+services:
+    django:
+        build: .
+        ports:
+            - "8000:8000"
+        volumes:
+            - .:/app
+        command: ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+
+    celery-worker:
+        build: .
+        volumes:
+            - .:/app
+        command:
+            [
+                "celery",
+                "-A",
+                "mysite",
+                "worker",
+                "--loglevel=info",
+                "--without-gossip",
+                "--without-mingle",
+                "--without-heartbeat",
+                "-Ofair",
+                "--pool=solo"
+            ]
+
+    celery-beat:
+        build: .
+        volumes:
+            - .:/app
+        command:
+            [
+                "celery",
+                "-A",
+                "mysite",
+                "beat",
+                "--loglevel=info",
+                "--scheduler",
+                "django_celery_beat.schedulers:DatabaseScheduler"
+            ]
+
+    redis:
+        image: "redis:alpine"
+        container_name: "redis"
+        ports:
+            - "6379:6379"
